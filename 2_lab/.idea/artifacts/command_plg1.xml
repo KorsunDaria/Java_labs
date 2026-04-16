@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="command_plg1">
+    <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
+    <root id="archive" name="command_plg1.jar">
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/DefineCommand.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/MulCommand.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/AddCommand.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/PushCommand.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/SubCommand.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/SqrtCommand.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/CommandSignature.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/DivCommand.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/PrintCommand.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/main/org/example/Commands/PopCommand.class" />
+    </root>
+  </artifact>
+</component>
