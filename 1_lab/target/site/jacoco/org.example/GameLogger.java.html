@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameLogger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bulls-and-cows</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">GameLogger.java</span></div><h1>GameLogger.java</h1><pre class="source lang-java linenums">package org.example;
+
+import java.io.*;
+import java.util.Date;
+
+/**
+ * Provides logging functionality to record game history into a file.
+ */
+public class GameLogger {
+    private final String fileName;
+
+    /**
+     * Initializes the logger with a specific file path.
+     * @param fileName Path to the log file.
+     */
+<span class="nc" id="L16">    public GameLogger(String fileName) {</span>
+<span class="nc" id="L17">        this.fileName = fileName;</span>
+<span class="nc" id="L18">    }</span>
+
+    /**
+     * Appends a text message to the log file.
+     * @param message String message to log.
+     */
+    public void log(String message) {
+<span class="nc" id="L25">        try (PrintWriter out = new PrintWriter(new FileWriter(fileName, true))) {</span>
+<span class="nc" id="L26">            out.println(&quot;[&quot; + new Date() + &quot;] &quot; + message);</span>
+<span class="nc" id="L27">        } catch (IOException e) {</span>
+<span class="nc" id="L28">            System.err.println(&quot;CRITICAL: Failed to write to log file.&quot;);</span>
+<span class="nc" id="L29">        }</span>
+<span class="nc" id="L30">    }</span>
+
+    /**
+     * Logs details of a single move.
+     * @param step Move number.
+     * @param guess Player's input string.
+     * @param result Result of the check.
+     */
+    public void logMove(int step, String guess, GameResult result) {
+<span class="nc" id="L39">        log(&quot;Step #&quot; + step + &quot; | Input: &quot; + guess +</span>
+<span class="nc" id="L40">                &quot; | Bulls: &quot; + result.getBulls() + &quot; Cows: &quot; + result.getCows());</span>
+<span class="nc" id="L41">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

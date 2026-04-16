@@ -1,0 +1,6 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+bulls-and-cows,org.example,Main,8,0,0,0,3,0,2,0,2,0
+bulls-and-cows,org.example,GameController,226,0,16,0,62,0,13,0,5,0
+bulls-and-cows,org.example,GameResult,0,23,0,2,0,7,0,5,0,4
+bulls-and-cows,org.example,GameLogger,40,0,0,0,12,0,3,0,3,0
+bulls-and-cows,org.example,GameModel,2,86,1,13,0,20,1,11,0,5

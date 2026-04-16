@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bulls-and-cows</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">GameModel.java</span></div><h1>GameModel.java</h1><pre class="source lang-java linenums">package org.example;
+
+/**
+ * Handles the core game logic for calculating Bulls and Cows.
+ */
+public class GameModel {
+    private final String secretCode;
+    private int attemptsLeft;
+
+    /**
+     * Initializes the game model with a secret code and attempt limit.
+     * @param secretCode The code generated for the player to guess.
+     * @param maxAttempts Maximum number of allowed attempts.
+     */
+<span class="fc" id="L15">    public GameModel(String secretCode, int maxAttempts) {</span>
+<span class="fc" id="L16">        this.secretCode = secretCode;</span>
+<span class="fc" id="L17">        this.attemptsLeft = maxAttempts;</span>
+<span class="fc" id="L18">    }</span>
+
+    /**
+     * Checks the player's guess against the secret code.
+     * @param guess The string provided by the player.
+     * @return A GameResult object containing bulls and cows count.
+     */
+    public GameResult check(String guess) {
+<span class="fc" id="L26">        int bulls = 0;</span>
+<span class="fc" id="L27">        int cows = 0;</span>
+
+        // Handle empty input (timeout) or invalid length
+<span class="fc bfc" id="L30" title="All 6 branches covered.">        if (guess == null || guess.isEmpty() || guess.length() != secretCode.length()) {</span>
+<span class="fc" id="L31">            attemptsLeft--;</span>
+<span class="fc" id="L32">            return new GameResult(0, 0);</span>
+        }
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 0; i &lt; guess.length(); i++) {</span>
+<span class="fc" id="L36">            char guessChar = guess.charAt(i);</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            if (guessChar == secretCode.charAt(i)) {</span>
+<span class="fc" id="L38">                bulls++;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            } else if (secretCode.contains(String.valueOf(guessChar))) {</span>
+<span class="fc" id="L40">                cows++;</span>
+            }
+        }
+
+<span class="fc" id="L44">        attemptsLeft--;</span>
+<span class="fc" id="L45">        return new GameResult(bulls, cows);</span>
+    }
+
+    /**
+     * Checks if the game can continue based on remaining attempts.
+     * @return true if there are attempts left.
+     */
+    public boolean canContinue() {
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        return attemptsLeft &gt; 0;</span>
+    }
+
+    /**
+     * Returns the number of remaining attempts.
+     * @return attempts count.
+     */
+    public int getAttemptsLeft() {
+<span class="fc" id="L61">        return attemptsLeft;</span>
+    }
+
+    /**
+     * Returns the secret code generated for the game.
+     * @return the secret code string.
+     */
+    public String getSecretCode() {
+<span class="fc" id="L69">        return secretCode;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

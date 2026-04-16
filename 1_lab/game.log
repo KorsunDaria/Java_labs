@@ -1,0 +1,10 @@
+[Thu Feb 19 09:47:24 GMT+07:00 2026] Game started. Secret: 35028 | Attempts: 15
+[Thu Feb 19 09:47:24 GMT+07:00 2026] Time Limit: 10
+[Thu Feb 19 09:47:30 GMT+07:00 2026] Step #1 | Input: 12345 | Bulls: 0 Cows: 3
+[Thu Feb 19 09:47:40 GMT+07:00 2026] Move 2: Timeout reached
+[Thu Feb 19 09:50:48 GMT+07:00 2026] Game started. Secret: 56478 | Attempts: 17
+[Thu Feb 19 09:50:48 GMT+07:00 2026] Time Limit: 5
+[Thu Feb 19 09:50:53 GMT+07:00 2026] Move 1: Timeout reached
+[Thu Apr 16 09:09:23 GMT+07:00 2026] Game started. Secret: 0127 | Attempts: 4
+[Thu Apr 16 09:09:23 GMT+07:00 2026] Time Limit: 20
+[Thu Apr 16 09:09:25 GMT+07:00 2026] Step #1 | Input: 1234 | Bulls: 0 Cows: 2
