@@ -86,13 +86,9 @@ public class Factory implements FactoryListener {
     @Override
     public void start() {
         allThreads = new ArrayList<>();
-        for (Supplier<Body> bodySupplier : bodySuppliers) {
-            allThreads.add(Thread.ofVirtual().start(bodySupplier));
-        }
-        for (Supplier<Motor> motorSupplier : motorSuppliers) {
-            allThreads.add(Thread.ofVirtual().start(motorSupplier));
-        }
 
+        allThreads.addAll(bodySuppliers.stream().map(Thread.ofVirtual()::start).toList());
+        allThreads.addAll(motorSuppliers.stream().map(Thread.ofVirtual()::start).toList());
         allThreads.addAll(accessorySuppliers.stream().map(Thread.ofVirtual()::start).toList());
 
         initWorkshop();
