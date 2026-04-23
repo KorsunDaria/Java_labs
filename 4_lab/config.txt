@@ -1,0 +1,25 @@
+# Storage sizes (capacity)
+StorageBodySize=50
+StorageMotorSize=50
+StorageAccessorySize=50
+StorageCarSize=50
+
+# Number of suppliers
+BodySuppliers=3
+MotorSuppliers=3
+AccessorySuppliers=3
+
+# Number of workers and dealers
+Workers=10
+Dealers=5
+
+# Supplier delays (milliseconds)
+BodySupplierDelay=1500
+MotorSupplierDelay=1500
+AccessorySupplierDelay=1500
+
+# Dealer speed (milliseconds)
+DealerDelay=2500
+
+# Logging
+LogSale=true

@@ -1,0 +1,34 @@
+package factory;
+
+import factory.details.Car;
+import factory.entity.Observable;
+import factory.entity.Observer;
+
+import java.util.ArrayList;
+
+public class ObservableStorage extends Storage<Car> implements Observable {
+    private final ArrayList<Observer> observers; //list
+
+    public ObservableStorage(int capacity) {
+        super(capacity);
+        observers = new ArrayList<>();
+    }
+
+    @Override
+    public void register(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer o : observers) {
+            o.update(Event.CAR_DEMAND);
+        }
+    }
+
+    @Override
+    public synchronized Car get() throws InterruptedException {
+        notifyObservers(); // за блок синхронизации и после get
+        return super.get();
+    }
+}
