@@ -8,7 +8,7 @@ public class Camera {
     private int screenHeight;
 
     private static final double WORLD_WIDTH = 1300.0;
-    private static final double WORLD_HEIGHT = 600.0;
+    private static final double WORLD_HEIGHT = 670.0;
 
     public void updateScreenSize(int width, int height) {
         this.screenWidth = width;
