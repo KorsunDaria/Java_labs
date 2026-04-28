@@ -31,7 +31,7 @@ public class MakeCar implements Task {
             accessory = accessoryStorage.get();
             String id = IDGenerator.generateID(Car.class);
             Car car = new Car(id, body, motor, accessory);
-            carStorage.put(car); // чтобы детали не потерялись
+            carStorage.put(car);
 
             body = null; motor = null; accessory = null;
         } catch (InterruptedException e) {
@@ -42,7 +42,7 @@ public class MakeCar implements Task {
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-            Thread.currentThread().interrupt(); //убрать (вернуть детали)
+            Thread.currentThread().interrupt();
         }
     }
 

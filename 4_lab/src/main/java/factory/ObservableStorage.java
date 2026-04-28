@@ -27,8 +27,9 @@ public class ObservableStorage extends Storage<Car> implements Observable {
     }
 
     @Override
-    public synchronized Car get() throws InterruptedException {
+    public Car get() throws InterruptedException {
+        Car car = super.get();
         notifyObservers(); // за блок синхронизации и после get
-        return super.get();
+        return car;
     }
 }
