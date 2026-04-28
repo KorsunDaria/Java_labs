@@ -7,11 +7,11 @@ import java.util.concurrent.BlockingQueue;
 
 public class ThreadPool {
     private final BlockingQueue<Task> taskQueue;//?
-    private final ArrayList<PooledThread> threads;//List
+    private final ArrayList<Thread> threads;//List
 
     private void createPooledThreads(int threadCount) {
         for (int i = 0; i < threadCount; ++i) {
-            PooledThread thread = new PooledThread(taskQueue);
+            Thread thread = new Thread(new PooledThread(taskQueue));
             threads.add(thread);
         }
     }
@@ -31,14 +31,14 @@ public class ThreadPool {
     }
 
     public void start() {
-        for (PooledThread thread : threads) {
+        for (Thread thread : threads) {
             thread.start();
         }
     }
 
     public void stop() {
-        for (PooledThread thread : threads) {
-            thread.stopThread();
+        for (Thread thread : threads) {
+            thread.interrupt();
         }
     }
 

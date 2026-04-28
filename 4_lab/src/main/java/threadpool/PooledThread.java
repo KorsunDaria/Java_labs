@@ -3,7 +3,7 @@ package threadpool;
 import factory.Tasks.Task;
 import java.util.concurrent.BlockingQueue;
 
-public class PooledThread extends Thread { //Runnable
+public class PooledThread implements Runnable { //Runnable
     private final BlockingQueue<Task> tasks;
 
     public PooledThread(BlockingQueue<Task> tasks) {
@@ -12,16 +12,15 @@ public class PooledThread extends Thread { //Runnable
 
     @Override
     public void run() {
-        while (!this.isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 Task task = tasks.take();
                 task.execute();
             } catch (InterruptedException e) {
-                this.interrupt(); //log
+                Thread.currentThread().interrupt(); //log
                 break;
             }
         }
     }
 
-    public void stopThread() { this.interrupt(); }
 }
