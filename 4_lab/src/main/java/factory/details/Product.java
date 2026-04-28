@@ -1,6 +1,8 @@
 package factory.details;
 
-public abstract class Product{
+import java.io.Serializable;
+
+public abstract class Product implements Serializable {
     private final String id;
 
     public Product(String id) {
