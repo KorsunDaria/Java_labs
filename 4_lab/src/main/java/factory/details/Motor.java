@@ -1,6 +1,8 @@
 package factory.details;
 
-public class Motor extends Product {
+import java.io.Serializable;
+
+public class Motor extends Product implements Serializable {
     public Motor(String id) {
         super(id);
     }

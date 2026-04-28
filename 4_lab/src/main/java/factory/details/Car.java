@@ -1,6 +1,8 @@
 package factory.details;
 
-public class Car extends Product {
+import java.io.Serializable;
+
+public class Car extends Product implements Serializable {
     private final Body body;
     private final Motor motor;
     private final Accessory accessory;
