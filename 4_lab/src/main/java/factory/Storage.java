@@ -1,10 +1,12 @@
 package factory;
 
 import factory.details.*;
+
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Storage<T extends Product> {
+public class Storage<T extends Product> implements Serializable {
     private final int capacity;
     private final Queue<T> items = new LinkedList<>();
     private int totalProduced = 0;
