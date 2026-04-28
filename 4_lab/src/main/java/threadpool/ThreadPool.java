@@ -2,31 +2,30 @@ package threadpool;
 
 import factory.Tasks.Task;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class ThreadPool {
-    private final BlockingQueue<Task> taskQueue;//?
+    private final List<Task> taskQueue = new LinkedList<>();//?
     private final ArrayList<Thread> threads;//List
 
-    private void createPooledThreads(int threadCount) {
+
+
+    public ThreadPool(int threadCount, int listSize) {
+        this.threads = new ArrayList<>(threadCount);
         for (int i = 0; i < threadCount; ++i) {
+
             Thread thread = new Thread(new PooledThread(taskQueue));
             threads.add(thread);
         }
     }
 
-    public ThreadPool(int threadCount, int taskQueueSize) {
-        taskQueue = new ArrayBlockingQueue<>(taskQueueSize);
-        threads = new ArrayList<>(threadCount);
-        createPooledThreads(threadCount);
-    }
-
     public void addTask(Task task) {
-        try {
-            taskQueue.put(task);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        synchronized (taskQueue) {
+            taskQueue.add(task);
+            taskQueue.notifyAll();
         }
     }
 
@@ -39,6 +38,9 @@ public class ThreadPool {
     public void stop() {
         for (Thread thread : threads) {
             thread.interrupt();
+        }
+        synchronized (taskQueue) {
+            taskQueue.notifyAll();
         }
     }
 
