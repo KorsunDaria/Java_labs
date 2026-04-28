@@ -2,6 +2,8 @@ package factory.entity;
 
 import factory.Storage;
 import factory.details.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utilities.IDGenerator;
 import java.lang.reflect.Constructor;
 import static java.lang.Thread.sleep;
@@ -10,6 +12,7 @@ public class Supplier<T extends Product> extends DelayedEntity implements Runnab
     private final Storage<T> storage;
     private final Class<T> detailClass;
     private final Constructor<T> constructor;
+    private static final Logger log = LoggerFactory.getLogger(Supplier.class);
 
     public Supplier(Class<T> detailClass, Storage<T> storage, int delay) {
         super(delay);
@@ -27,6 +30,7 @@ public class Supplier<T extends Product> extends DelayedEntity implements Runnab
         try {
             detail = constructor.newInstance(IDGenerator.generateID(detailClass));
         } catch (Exception e) {
+            log.info("Problem with creating details.", getClass().getSimpleName());
             throw new RuntimeException(e.getMessage());
         }
         return detail;
@@ -40,8 +44,9 @@ public class Supplier<T extends Product> extends DelayedEntity implements Runnab
                 storage.put(detail);
                 sleep(getDelay());
             } catch (InterruptedException e) {
+                log.info("Entity {} stopped via interrupt.", getClass().getSimpleName());
                 Thread.currentThread().interrupt();
-                break;
+                //break;
             }
         }
     }

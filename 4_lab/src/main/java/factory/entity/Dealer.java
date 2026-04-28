@@ -30,8 +30,9 @@ public class Dealer extends DelayedEntity implements Runnable {
                 }
                 sleep(getDelay());
             } catch (InterruptedException e) {
+                log.info("Entity {} stopped via interrupt.", getClass().getSimpleName());
                 Thread.currentThread().interrupt();
-                break;
+                //break;
             }
         }
     }
