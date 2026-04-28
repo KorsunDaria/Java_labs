@@ -22,15 +22,28 @@ public class MakeCar implements Task {
     }
 
     public void execute() {
+        Body body = null;
+        Motor motor = null;
+        Accessory accessory = null;
         try {
-            Body body = bodyStorage.get();
-            Motor motor = motorStorage.get();
-            Accessory accessory = accessoryStorage.get();
+            body = bodyStorage.get();
+            motor = motorStorage.get();
+            accessory = accessoryStorage.get();
             String id = IDGenerator.generateID(Car.class);
             Car car = new Car(id, body, motor, accessory);
             carStorage.put(car); // чтобы детали не потерялись
+
+            body = null; motor = null; accessory = null;
         } catch (InterruptedException e) {
+            try {
+                if (body != null) bodyStorage.put(body);
+                if (motor != null) motorStorage.put(motor);
+                if (accessory != null) accessoryStorage.put(accessory);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
             Thread.currentThread().interrupt(); //убрать (вернуть детали)
         }
     }
+
 }
