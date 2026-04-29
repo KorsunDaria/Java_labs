@@ -7,7 +7,9 @@ import factory.details.Car;
 import factory.details.Motor;
 import threadpool.ThreadPool;
 
-public class Workshop {
+import java.io.Serializable;
+
+public class Workshop implements Serializable {
     private final ThreadPool threadPool;
     private final Storage<Body> bodyStorage;
     private final Storage<Motor> motorStorage;

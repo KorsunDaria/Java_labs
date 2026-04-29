@@ -10,4 +10,5 @@ public interface FactoryListener {
     void setMotorSupplierDelay(int delay);
     void setAccessorySupplierDelay(int delay);
     void stop();
+    void saveState();
 }

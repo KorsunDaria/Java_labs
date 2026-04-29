@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ObservableStorage extends Storage<Car> implements Observable, Serializable {
-    private final ArrayList<Observer> observers; //list
+    private transient ArrayList<Observer> observers; //list
 
     public ObservableStorage(int capacity) {
         super(capacity);
@@ -17,11 +17,13 @@ public class ObservableStorage extends Storage<Car> implements Observable, Seria
 
     @Override
     public void register(Observer o) {
+        if (observers == null) observers = new ArrayList<>();
         observers.add(o);
     }
 
     @Override
     public void notifyObservers() {
+        if (observers == null) return;
         for (Observer o : observers) {
             o.update(Event.CAR_DEMAND);
         }
@@ -29,8 +31,7 @@ public class ObservableStorage extends Storage<Car> implements Observable, Seria
 
     @Override
     public Car get() throws InterruptedException {
-        Car car = super.get();
-        notifyObservers(); // за блок синхронизации и после get
-        return car;
+        notifyObservers();
+        return super.get();
     }
 }

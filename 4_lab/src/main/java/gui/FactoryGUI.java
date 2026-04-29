@@ -95,6 +95,7 @@ public class FactoryGUI extends  JFrame implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 factoryObserver.stop();
+                factoryObserver.saveState();
                 dispose();
                 System.exit(0);
             }
@@ -149,4 +150,6 @@ public class FactoryGUI extends  JFrame implements ActionListener {
     public void setCurrentRow(int currentRow) {
         this.currentRow = currentRow;
     }
+
+
 }

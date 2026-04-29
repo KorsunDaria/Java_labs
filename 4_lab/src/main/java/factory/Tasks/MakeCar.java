@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utilities.IDGenerator;
 
-public class MakeCar implements Task {
+import java.io.Serializable;
+
+public class MakeCar implements Task, Serializable {
     private final Storage<Body> bodyStorage;
     private final Storage<Motor> motorStorage;
     private final Storage<Accessory> accessoryStorage;

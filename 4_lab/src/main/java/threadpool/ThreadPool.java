@@ -1,15 +1,17 @@
 package threadpool;
 
 import factory.Tasks.Task;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class ThreadPool {
-    private final List<Task> taskQueue = new LinkedList<>();//?
-    private final ArrayList<Thread> threads;//List
+public class ThreadPool implements Serializable {
+    private transient List<Task> taskQueue = new LinkedList<>();//?
+    private transient ArrayList<Thread> threads;//List
 
 
 

@@ -1,5 +1,6 @@
 package factory;
 
+import factory.Tasks.MakeCar;
 import factory.details.Accessory;
 import factory.details.Body;
 import factory.details.Motor;
@@ -7,17 +8,22 @@ import factory.Tasks.Workshop;
 import factory.entity.Dealer;
 import factory.entity.Supplier;
 import gui.FactoryListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utilities.Config;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Factory implements FactoryListener {
-    private final Config config;
+    private Config config;
 
     private Storage<Body> bodyStorage;
     private Storage<Motor> motorStorage;
     private Storage<Accessory> accessoryStorage;
     private ObservableStorage carStorage;
+    private static final Logger log = LoggerFactory.getLogger(Factory.class);
 
     private List<Supplier<Body>> bodySuppliers;
     private List<Supplier<Motor>> motorSuppliers;
@@ -79,6 +85,7 @@ public class Factory implements FactoryListener {
     public Factory(Config config) {
         this.config = config;
         initStorages();
+        loadState();
         initSuppliers();
         initDealers();
     }
@@ -99,6 +106,8 @@ public class Factory implements FactoryListener {
             allThreads.add(thread);
             thread.start();
         }
+
+        //carStorage.notifyObservers();
 
     }
 
@@ -145,5 +154,30 @@ public class Factory implements FactoryListener {
             thread.interrupt();
         }
         workshop.stop();
+    }
+
+    public void saveState() {
+        try (java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(new java.io.FileOutputStream("factory_state.ser"))) {
+            out.writeObject(bodyStorage);
+            out.writeObject(motorStorage);
+            out.writeObject(accessoryStorage);
+            out.writeObject(carStorage);
+        } catch (java.io.IOException e) {
+            log.error("Problem with saveState"+e.getMessage());
+        }
+    }
+
+    public void loadState() {
+        java.io.File file = new java.io.File("factory_state.ser");
+        if (!file.exists()) return;
+
+        try (java.io.ObjectInputStream in = new java.io.ObjectInputStream(new java.io.FileInputStream(file))) {
+            this.bodyStorage = (Storage<Body>) in.readObject();
+            this.motorStorage = (Storage<Motor>) in.readObject();
+            this.accessoryStorage = (Storage<Accessory>) in.readObject();
+            this.carStorage = (ObservableStorage) in.readObject();
+        } catch (Exception e) {
+            log.error("Problem with loadState"+e.getMessage());
+        }
     }
 }

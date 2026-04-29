@@ -3,7 +3,9 @@ package factory;
 import factory.Tasks.Workshop;
 import factory.entity.Observer;
 
-public class Controller implements Observer {
+import java.io.Serializable;
+
+public class Controller implements Observer, Serializable {
     private final Workshop workshop;
     private final ObservableStorage carStorage;
     private final int capacity;
