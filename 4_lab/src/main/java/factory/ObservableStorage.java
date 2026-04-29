@@ -31,8 +31,7 @@ public class ObservableStorage extends Storage<Car> implements Observable, Seria
 
     @Override
     public Car get() throws InterruptedException {
-        Car car = super.get();
         notifyObservers();
-        return car;
+        return super.get();
     }
 }
