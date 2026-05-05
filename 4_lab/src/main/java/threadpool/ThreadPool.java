@@ -9,17 +9,40 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class ThreadPool implements Serializable {
-    private transient List<Task> taskQueue = new LinkedList<>();//?
-    private transient ArrayList<Thread> threads;//List
+public class ThreadPool {
+    private final List<Task> taskQueue = new LinkedList<>();//?
+    private final List<Thread> threads;//List
 
 
+    class PooledThread implements Runnable { //Runnable
+
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                Task task;
+                synchronized (ThreadPool.this.taskQueue) {
+                    try {
+                        while (ThreadPool.this.taskQueue.isEmpty()) {
+                            ThreadPool.this.taskQueue.wait(20);
+                        }
+                        task = ThreadPool.this.taskQueue.removeFirst();
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+                if (task != null) {
+                    task.execute();
+                }
+            }
+        }
+
+    }
 
     public ThreadPool(int threadCount, int listSize) {
         this.threads = new ArrayList<>(threadCount);
         for (int i = 0; i < threadCount; ++i) {
 
-            Thread thread = new Thread(new PooledThread(taskQueue));
+            Thread thread = new Thread(new PooledThread());
             threads.add(thread);
         }
     }
@@ -40,9 +63,6 @@ public class ThreadPool implements Serializable {
     public void stop() {
         for (Thread thread : threads) {
             thread.interrupt();
-        }
-        synchronized (taskQueue) {
-            taskQueue.notifyAll();
         }
     }
 
