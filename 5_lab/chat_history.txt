@@ -1,0 +1,11 @@
+Daria	Daria
+Masha	Hi
+Daria	Hello
+Misha	1
+Katya	Hi
+Masha	qwertty
+Katya	4
+Katya	Hello
+Pasha	2
+Daria	15
+Dasha	14]
