@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4027afa-cf8c-4c49-934d-ae44a69103a2" name="Changes" comment="fix error">
-      <change afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/message/ErrorMsg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chat_history.txt" beforeDir="false" afterPath="$PROJECT_DIR$/chat_history.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/chat/client/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/chat/client/Connection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/Message.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/Protocol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/SerialProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/SerialProtocol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/XmlProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/XmlProtocol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/ChatRoom.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/ChatRoom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/MessageHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/MessageHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/Server.java" afterDir="false" />
-    </list>
+    <list default="true" id="b4027afa-cf8c-4c49-934d-ae44a69103a2" name="Changes" comment="split massage_type to class massage" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -114,7 +101,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778336250166</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="split massage_type to class massage">
+      <option name="closed" value="true" />
+      <created>1778488977594</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1778488977594</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -130,7 +125,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fix error" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix error" />
+    <MESSAGE value="split massage_type to class massage" />
+    <option name="LAST_COMMIT_MESSAGE" value="split massage_type to class massage" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
