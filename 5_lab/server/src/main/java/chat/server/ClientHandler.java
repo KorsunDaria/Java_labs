@@ -1,6 +1,7 @@
 package chat.server;
 
 import chat.protocol.*;
+import chat.protocol.message.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -30,17 +31,7 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             socket.setSoTimeout(TIMEOUT_MS);
-
-            socket.setSoTimeout(5000);
-            int firstByte = socket.getInputStream().read();
-            socket.setSoTimeout(TIMEOUT_MS);
-
-            if (firstByte == 0xAC) {
-                protocol = new SerialProtocol(new PeekedSocket(socket, (byte) firstByte));
-            } else {
-                protocol = new XmlProtocol(new PeekedSocket(socket, (byte) firstByte));
-            }
-
+            protocol = Server.detectProtocol(socket);
             handleMessages();
 
         } catch (IOException e) {
@@ -56,61 +47,51 @@ public class ClientHandler implements Runnable {
             Message msg = protocol.readMessage();
             logger.log("Take [" + (username != null ? username : "?") + "]: " + msg);
 
-            switch (msg.getType()) {
-                case Message.LOGIN   -> handleLogin(msg);
-                case Message.LOGOUT  -> { handleLogout(); return; }
-                case Message.MESSAGE -> handleMessage(msg);
-                case Message.LIST    -> handleList(msg);
-                default -> sendError("Incorrect massage type: " + msg.getType());
-            }
+            if (msg instanceof LoginMsg m)        { handleLogin(m); }
+            else if (msg instanceof LogoutMsg)    { handleLogout(); return; }
+            else if (msg instanceof SendMessageMsg m) { handleMessage(m); }
+            else if (msg instanceof ListRequestMsg m) { handleList(m); }
+            else { sendError("Неизвестный тип сообщения"); }
         }
     }
 
-    private void handleLogin(Message msg) throws IOException {
-        String name = msg.getName();
-        String password = msg.getText();
-
-        if (name == null || name.isBlank()) {
+    private void handleLogin(LoginMsg msg) throws IOException {
+        if (msg.getName() == null || msg.getName().isBlank()) {
             sendError("Name could be not empty");
             return;
         }
 
-        String error = users.authenticate(name, password);
+        String error = users.authenticate(msg.getName(), msg.getPassword());
         if (error != null) {
             sendError(error);
             return;
         }
 
-        if (room.isOnline(name)) {
+        if (room.isOnline(msg.getName())) {
             sendError("Dubliccate name");
             return;
         }
 
-        this.username = name;
+        this.username = msg.getName();
         this.session  = java.util.UUID.randomUUID().toString();
 
         room.join(this);
-
-
-        Message ok = new Message(Message.SUCCESS);
-        ok.setSession(session);
-        protocol.writeMessage(ok);
-
+        protocol.writeMessage(new SuccessMsg(session));
 
         for (Message histMsg : room.getHistory()) {
             protocol.writeMessage(histMsg);
         }
 
-        room.broadcast(eventLogin(name), this);
-        logger.log(name + " entrance the chat");
+        room.broadcast(new EventLoginMsg(username), this);
         broadcastUserList();
+        logger.log(username + " вошёл в чат");
     }
 
     private void handleLogout() throws IOException {
-        protocol.writeMessage(new Message(Message.SUCCESS));
+        protocol.writeMessage(new SuccessMsg(null));
     }
 
-    private void handleMessage(Message msg) throws IOException {
+    private void handleMessage(SendMessageMsg msg) throws IOException {
         if (!isLoggedIn(msg.getSession())) return;
 
         String text = msg.getText();
@@ -119,24 +100,17 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        Message event = new Message(Message.EVENT_MESSAGE);
-        event.setName(username);
-        event.setText(text);
-
+        EventMessageMsg event = new EventMessageMsg(username, msg.getText());
         room.broadcast(event, null);
         room.saveToHistory(event);
 
-        protocol.writeMessage(new Message(Message.SUCCESS));
-        logger.log(username + ": " + text);
+        protocol.writeMessage(new SuccessMsg(null));
+        logger.log(username + ": " + msg.getText());
     }
 
-    private void handleList(Message msg) throws IOException {
+    private void handleList(ListRequestMsg msg) throws IOException {
         if (!isLoggedIn(msg.getSession())) return;
-
-        String[] onlineUsers = room.getOnlineUsers();
-        Message response = new Message(Message.LIST_RESPONSE);
-        response.setUsers(onlineUsers);
-        protocol.writeMessage(response);
+        protocol.writeMessage(new ListResponseMsg(room.getOnlineUsers()));
     }
 
 
@@ -160,36 +134,22 @@ public class ClientHandler implements Runnable {
     }
 
     private void sendError(String reason) throws IOException {
-        Message err = new Message(Message.ERROR);
-        err.setText(reason);
-        protocol.writeMessage(err);
+        protocol.writeMessage(new ErrorMsg(reason));
+    }
+
+    private void broadcastUserList() {
+        room.broadcast(new ListResponseMsg(room.getOnlineUsers()), null);
     }
 
     private void cleanup() {
         if (username != null) {
             room.leave(this);
-            room.broadcast(eventLogout(username), null);
-            logger.log(username + " left the chat");
+            room.broadcast(new EventLogoutMsg(username), null);
             broadcastUserList();
+            logger.log(username + " покинул чат");
         }
         try { socket.close(); } catch (IOException ignored) {}
     }
 
-    private Message eventLogin(String name) {
-        Message m = new Message(Message.EVENT_LOGIN);
-        m.setName(name);
-        return m;
-    }
 
-    private Message eventLogout(String name) {
-        Message m = new Message(Message.EVENT_LOGOUT);
-        m.setName(name);
-        return m;
-    }
-
-    private void broadcastUserList() {
-        Message list = new Message(Message.LIST_RESPONSE);
-        list.setUsers(room.getOnlineUsers());
-        room.broadcast(list, null);
-    }
 }

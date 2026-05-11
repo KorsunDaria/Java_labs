@@ -1,6 +1,6 @@
 package chat.server;
 
-import chat.protocol.Message;
+import chat.protocol.message.*;
 
 import java.io.*;
 import java.nio.file.*;
@@ -19,10 +19,10 @@ public class MessageHistory {
     }
 
 
-    public synchronized void append(Message msg) {
+    public synchronized void append(EventMessageMsg msg) {
         try (BufferedWriter writer = Files.newBufferedWriter(
                 historyFile, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
-            String name = msg.getName() != null ? msg.getName() : "";
+            String name = msg.getFromName() != null ? msg.getFromName() : "";
             String text = msg.getText() != null ? msg.getText().replace("\t", " ") : "";
             writer.write(name + "\t" + text);
             writer.newLine();
@@ -32,25 +32,19 @@ public class MessageHistory {
     }
 
 
-    public synchronized List<Message> getLast() {
-        List<Message> result = new ArrayList<>();
+    public synchronized List<EventMessageMsg> getLast() {
+        List<EventMessageMsg> result = new ArrayList<>();
         if (!Files.exists(historyFile)) return result;
 
         try {
             List<String> lines = Files.readAllLines(historyFile);
             int from = Math.max(0, lines.size() - maxSize);
             for (int i = from; i < lines.size(); i++) {
-                String line = lines.get(i);
-                int tab = line.indexOf('\t');
+                int tab = lines.get(i).indexOf('\t');
                 if (tab < 0) continue;
-
-                String name = line.substring(0, tab);
-                String text = line.substring(tab + 1);
-
-                Message msg = new Message(Message.EVENT_MESSAGE);
-                msg.setName(name);
-                msg.setText(text);
-                result.add(msg);
+                result.add(new EventMessageMsg(
+                        lines.get(i).substring(0, tab),
+                        lines.get(i).substring(tab + 1)));
             }
         } catch (IOException e) {
             System.err.println("Could not read history: " + e.getMessage());

@@ -1,5 +1,6 @@
 package chat.protocol;
 
+import chat.protocol.message.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -52,70 +53,64 @@ public class XmlProtocol implements Protocol {
 
     private Message parseXml(String xml) throws IOException {
         try {
-            Document doc = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
-
-            Element root = doc.getDocumentElement();
-            String tag = root.getTagName();
-            Message msg = new Message();
-
-            switch (tag) {
-                case "command" -> {
-                    String name = root.getAttribute("name");
-                    msg.setType(name);
-                    msg.setName(getText(root, "name"));
-                    String msgText = getText(root, "message");
-                    if (msgText == null) msgText = getText(root, "password");
-                    msg.setText(msgText);
-                    msg.setSession(getText(root, "session"));
-                    msg.setClientType(getText(root, "type"));
-                }
-                case "event" -> {
-                    String name = root.getAttribute("name");
-                    msg.setType("event_" + name);
-                    msg.setName(getText(root, "name"));
-                    msg.setText(getText(root, "message"));
-                }
-                case "success" -> {
-                    msg.setType(Message.SUCCESS);
-                    msg.setSession(getText(root, "session"));
-                    NodeList userNodes = root.getElementsByTagName("user");
-                    if (userNodes.getLength() > 0) {
-                        msg.setType(Message.LIST_RESPONSE);
-                        String[] users = new String[userNodes.getLength()];
-                        for (int i = 0; i < userNodes.getLength(); i++) {
-                            Element u = (Element) userNodes.item(i);
-                            users[i] = getText(u, "name");
-                        }
-                        msg.setUsers(users);
-                    }
-                }
-                case "error" -> {
-                    msg.setType(Message.ERROR);
-                    msg.setText(getText(root, "message"));
-                }
-            }
-            return msg;
-        } catch (Exception e) {
+            Element root = parseRoot(xml);
+            return switch (root.getTagName()) {
+                case "command" -> parseCommand(root);
+                case "event"   -> parseEvent(root);
+                case "success" -> parseSuccess(root);
+                case "error"   -> new ErrorMsg(getText(root, "message"));
+                default -> throw new IOException("Неизвестный тег: " + root.getTagName());
+            };
+        }catch (IOException e) {
+            throw e;
+        }  catch (Exception e) {
             throw new IOException("Error with parse XML: " + e.getMessage(), e);
         }
+    }
+    private Message parseCommand(Element root) throws IOException {
+        return switch (root.getAttribute("name")) {
+            case "login"   -> new LoginMsg(
+                    getText(root, "name"),
+                    getText(root, "password"),
+                    getText(root, "type"));
+            case "logout"  -> new LogoutMsg(getText(root, "session"));
+            case "message" -> new SendMessageMsg(getText(root, "message"), getText(root, "session"));
+            case "list"    -> new ListRequestMsg(getText(root, "session"));
+            default -> throw new IOException("Неизвестная команда: " + root.getAttribute("name"));
+        };
+    }
+
+    private Message parseEvent(Element root) throws IOException {
+        return switch (root.getAttribute("name")) {
+            case "message"    -> new EventMessageMsg(getText(root, "name"), getText(root, "message"));
+            case "userlogin"  -> new EventLoginMsg(getText(root, "name"));
+            case "userlogout" -> new EventLogoutMsg(getText(root, "name"));
+            default -> throw new IOException("Неизвестное событие: " + root.getAttribute("name"));
+        };
+    }
+
+    private Message parseSuccess(Element root) {
+        NodeList userNodes = root.getElementsByTagName("user");
+        if (userNodes.getLength() > 0) {
+            String[] users = new String[userNodes.getLength()];
+            for (int i = 0; i < userNodes.getLength(); i++) {
+                users[i] = getText((Element) userNodes.item(i), "name");
+            }
+            return new ListResponseMsg(users);
+        }
+        return new SuccessMsg(getText(root, "session"));
     }
 
     private String getText(Element parent, String tag) {
         NodeList list = parent.getElementsByTagName(tag);
-        if (list.getLength() == 0) return null;
-        return list.item(0).getTextContent();
+        return list.getLength() == 0 ? null : list.item(0).getTextContent();
     }
 
 
     private String toXml(Message msg) throws IOException {
         try {
-            Document doc = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder().newDocument();
-
-            Element root = buildElement(doc, msg);
-            doc.appendChild(root);
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            doc.appendChild(buildElement(doc, msg));
 
             Transformer tf = TransformerFactory.newInstance().newTransformer();
             tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
@@ -129,80 +124,91 @@ public class XmlProtocol implements Protocol {
         }
     }
 
-    private Element buildElement(Document doc, Message msg) {
-        return switch (msg.getType()) {
-            case Message.LOGIN -> {
-                Element e = doc.createElement("command");
-                e.setAttribute("name", "login");
-                addChild(doc, e, "name", msg.getName());
-                addChild(doc, e, "password", msg.getText());
-                addChild(doc, e, "type", msg.getClientType() != null ? msg.getClientType() : "SwingClient");
-                yield e;
-            }
-            case Message.LOGOUT -> {
-                Element e = doc.createElement("command");
-                e.setAttribute("name", "logout");
-                addChild(doc, e, "session", msg.getSession());
-                yield e;
-            }
-            case Message.MESSAGE -> {
-                Element e = doc.createElement("command");
-                e.setAttribute("name", "message");
-                addChild(doc, e, "message", msg.getText());
-                addChild(doc, e, "session", msg.getSession());
-                yield e;
-            }
-            case Message.LIST -> {
-                Element e = doc.createElement("command");
-                e.setAttribute("name", "list");
-                addChild(doc, e, "session", msg.getSession());
-                yield e;
-            }
-            case Message.SUCCESS -> {
-                Element e = doc.createElement("success");
-                if (msg.getSession() != null) addChild(doc, e, "session", msg.getSession());
-                yield e;
-            }
-            case Message.LIST_RESPONSE -> {
-                Element e = doc.createElement("success");
-                Element list = doc.createElement("listusers");
-                if (msg.getUsers() != null) {
-                    for (String u : msg.getUsers()) {
-                        Element user = doc.createElement("user");
-                        addChild(doc, user, "name", u);
-                        addChild(doc, user, "type", "SwingClient");
-                        list.appendChild(user);
-                    }
+
+    private Element buildElement(Document doc, Message msg) throws IOException {
+        if (msg instanceof LoginMsg m) {
+            Element e = command(doc, "login");
+            addChild(doc, e, "name",     m.getName());
+            addChild(doc, e, "password", m.getPassword());
+            addChild(doc, e, "type",     m.getClientType() != null ? m.getClientType() : "SwingClient");
+            return e;
+        }
+        if (msg instanceof LogoutMsg m) {
+            Element e = command(doc, "logout");
+            addChild(doc, e, "session", m.getSession());
+            return e;
+        }
+        if (msg instanceof SendMessageMsg m) {
+            Element e = command(doc, "message");
+            addChild(doc, e, "message", m.getText());
+            addChild(doc, e, "session", m.getSession());
+            return e;
+        }
+        if (msg instanceof ListRequestMsg m) {
+            Element e = command(doc, "list");
+            addChild(doc, e, "session", m.getSession());
+            return e;
+        }
+        if (msg instanceof SuccessMsg m) {
+            Element e = doc.createElement("success");
+            if (m.getSession() != null) addChild(doc, e, "session", m.getSession());
+            return e;
+        }
+        if (msg instanceof ListResponseMsg m) {
+            Element e = doc.createElement("success");
+            Element list = doc.createElement("listusers");
+            if (m.getUsers() != null) {
+                for (String u : m.getUsers()) {
+                    Element user = doc.createElement("user");
+                    addChild(doc, user, "name", u);
+                    addChild(doc, user, "type", "SwingClient");
+                    list.appendChild(user);
                 }
-                e.appendChild(list);
-                yield e;
             }
-            case Message.ERROR -> {
-                Element e = doc.createElement("error");
-                addChild(doc, e, "message", msg.getText());
-                yield e;
-            }
-            case Message.EVENT_MESSAGE -> {
-                Element e = doc.createElement("event");
-                e.setAttribute("name", "message");
-                addChild(doc, e, "message", msg.getText());
-                addChild(doc, e, "name", msg.getName());
-                yield e;
-            }
-            case Message.EVENT_LOGIN -> {
-                Element e = doc.createElement("event");
-                e.setAttribute("name", "userlogin");
-                addChild(doc, e, "name", msg.getName());
-                yield e;
-            }
-            case Message.EVENT_LOGOUT -> {
-                Element e = doc.createElement("event");
-                e.setAttribute("name", "userlogout");
-                addChild(doc, e, "name", msg.getName());
-                yield e;
-            }
-            default -> doc.createElement("unknown");
-        };
+            e.appendChild(list);
+            return e;
+        }
+        if (msg instanceof ErrorMsg m) {
+            Element e = doc.createElement("error");
+            addChild(doc, e, "message", m.getReason());
+            return e;
+        }
+        if (msg instanceof EventMessageMsg m) {
+            Element e = event(doc, "message");
+            addChild(doc, e, "message", m.getText());
+            addChild(doc, e, "name",    m.getFromName());
+            return e;
+        }
+        if (msg instanceof EventLoginMsg m) {
+            Element e = event(doc, "userlogin");
+            addChild(doc, e, "name", m.getName());
+            return e;
+        }
+        if (msg instanceof EventLogoutMsg m) {
+            Element e = event(doc, "userlogout");
+            addChild(doc, e, "name", m.getName());
+            return e;
+        }
+        throw new IOException("Неизвестный тип сообщения: " + msg.getClass());
+    }
+
+    private Element parseRoot(String xml) throws Exception {
+        Document doc = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder()
+                .parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+        return doc.getDocumentElement();
+    }
+
+    private Element command(Document doc, String name) {
+        Element e = doc.createElement("command");
+        e.setAttribute("name", name);
+        return e;
+    }
+
+    private Element event(Document doc, String name) {
+        Element e = doc.createElement("event");
+        e.setAttribute("name", name);
+        return e;
     }
 
     private void addChild(Document doc, Element parent, String tag, String text) {
@@ -211,4 +217,6 @@ public class XmlProtocol implements Protocol {
         child.setTextContent(text);
         parent.appendChild(child);
     }
+
+
 }

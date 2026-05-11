@@ -5,26 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4027afa-cf8c-4c49-934d-ae44a69103a2" name="Changes" comment="fix error">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/history.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/users.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/auth/UserStore.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/client/AuthException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/client/ChatWindow.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/client/Client.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/client/ServerConnection.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/persistence/HistoryStore.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/protocol/Message.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/protocol/Transport.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/protocol/XmlTransport.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/server/ChatRoom.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/server/ClientHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/server/Server.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/server.properties" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/message/ErrorMsg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chat_history.txt" beforeDir="false" afterPath="$PROJECT_DIR$/chat_history.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/chat/client/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/chat/client/Connection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/Message.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/Protocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/SerialProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/SerialProtocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/XmlProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/XmlProtocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/ChatRoom.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/ChatRoom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/MessageHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/MessageHistory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/Server.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,22 +27,25 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
     <option name="RESET_MODE" value="HARD" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "KorsunDaria"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;KorsunDaria&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/KorsunDaria/Java_labs.git",
-    "accountId": "9f0e8b0a-b96d-426b-9ca5-f0b3f859e29c"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/KorsunDaria/Java_labs.git&quot;,
+    &quot;accountId&quot;: &quot;9f0e8b0a-b96d-426b-9ca5-f0b3f859e29c&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="3DTmvZzB7aYwR1v54PMXoagQNzF" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -63,16 +58,21 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/dariakorsun/labs/Java_labs/5_lab",
+    "last_opened_file_path": "/Users/dariakorsun/labs/Java_labs/5_lab/protocol/src/main/java/chat/protocol/message",
     "onboarding.tips.debug.path": "/Users/dariakorsun/labs/Java_labs/5_lab/src/main/java/org/example/Main.java"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/message" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="chat.protocol" />
+      <recent name="chat.protocol.message" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -106,7 +106,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778330915601</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fix error">
+      <option name="closed" value="true" />
+      <created>1778336250166</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1778336250166</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

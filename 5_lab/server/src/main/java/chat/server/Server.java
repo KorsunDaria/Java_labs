@@ -1,7 +1,12 @@
 package chat.server;
 
+import chat.protocol.Protocol;
+import chat.protocol.SerialProtocol;
+import chat.protocol.XmlProtocol;
+
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
@@ -51,5 +56,14 @@ public class Server {
             System.out.println(" can not find server.properties");
         }
         return props;
+    }
+
+    public static Protocol detectProtocol(Socket socket) throws IOException {
+        InputStream in = socket.getInputStream();
+        int marker = in.read();
+        if (marker == Protocol.MARKER_SERIAL) {
+            return new SerialProtocol(socket);
+        }
+        return new XmlProtocol(socket);
     }
 }

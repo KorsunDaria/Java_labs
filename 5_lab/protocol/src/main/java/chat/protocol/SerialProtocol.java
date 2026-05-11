@@ -1,5 +1,7 @@
 package chat.protocol;
 
+import chat.protocol.message.Message;
+
 import java.io.*;
 import java.net.Socket;
 

@@ -1,8 +1,10 @@
 package chat.client;
 
 import chat.protocol.*;
+import chat.protocol.message.*;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 
 
@@ -39,26 +41,17 @@ public class Connection {
 
     public void sendMessage(String text) {
         if (session == null) return;
-        Message msg = new Message(Message.MESSAGE);
-        msg.setText(text);
-        msg.setSession(session);
-        send(msg);
+        send(new SendMessageMsg(text, session));
     }
 
     public void requestUserList() {
         if (session == null) return;
-        Message msg = new Message(Message.LIST);
-        msg.setSession(session);
-        send(msg);
+        send(new ListRequestMsg(session));
     }
 
     public void disconnect() {
         running = false;
-        if (session != null && protocol != null) {
-            Message msg = new Message(Message.LOGOUT);
-            msg.setSession(session);
-            send(msg);
-        }
+        if (session != null) send(new LogoutMsg(session));
         closeProtocol();
     }
 
@@ -89,41 +82,38 @@ public class Connection {
 
     private void connect() throws IOException {
         Socket socket = new Socket(host, port);
+        OutputStream raw = socket.getOutputStream();
+        raw.write(useXml ? Protocol.MARKER_XML : Protocol.MARKER_SERIAL);
+        raw.flush();
+
         protocol = useXml ? new XmlProtocol(socket) : new SerialProtocol(socket);
     }
 
     private void login() throws IOException, AuthException {
-        Message msg = new Message(Message.LOGIN);
-        msg.setName(username);
-        msg.setText(password);
-        msg.setClientType("SwingClient");
-        protocol.writeMessage(msg);
+        protocol.writeMessage(new LoginMsg(username, password, "SwingClient"));
 
         Message response = protocol.readMessage();
-        if (Message.ERROR.equals(response.getType())) {
-            throw new AuthException(response.getText());
+        if (response instanceof ErrorMsg m) {
+            throw new AuthException(m.getReason());
         }
-        this.session = response.getSession();
+        this.session = ((SuccessMsg) response).getSession();
     }
 
     private void readLoop() throws IOException {
         while (running) {
-            Message msg = protocol.readMessage();
-            handleIncoming(msg);
+            handleIncoming(protocol.readMessage());
         }
     }
 
     private void handleIncoming(Message msg) {
-        switch (msg.getType()) {
-            case Message.EVENT_MESSAGE  -> window.appendMessage(msg.getName(), msg.getText());
-            case Message.EVENT_LOGIN -> {
-                window.appendEvent(msg.getName() + " Entered chat");
-            }
-            case Message.EVENT_LOGOUT -> {
-                window.appendEvent(msg.getName() + " Left chat");
-
-            }
-            case Message.LIST_RESPONSE  -> window.updateUserList(msg.getUsers());
+        if (msg instanceof EventMessageMsg m) {
+            window.appendMessage(m.getFromName(), m.getText());
+        } else if (msg instanceof EventLoginMsg m) {
+            window.appendEvent(m.getName() + " вошёл в чат");
+        } else if (msg instanceof EventLogoutMsg m) {
+            window.appendEvent(m.getName() + " покинул чат");
+        } else if (msg instanceof ListResponseMsg m) {
+            window.updateUserList(m.getUsers());
         }
     }
 

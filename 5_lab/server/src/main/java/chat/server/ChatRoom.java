@@ -1,8 +1,7 @@
 package chat.server;
 
-import chat.protocol.Message;
+import chat.protocol.message.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -50,11 +49,11 @@ public class ChatRoom {
     }
 
 
-    public List<Message> getHistory() {
+    public List<EventMessageMsg> getHistory() {
         return history.getLast();
     }
 
-    public void saveToHistory(Message msg) {
+    public void saveToHistory(EventMessageMsg msg) {
         history.append(msg);
     }
 }
