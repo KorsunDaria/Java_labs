@@ -13,10 +13,12 @@ public class LoginDialog extends JDialog {
     private final JTextField     nameField     = new JTextField(15);
     private final JPasswordField passwordField = new JPasswordField(15);
     private final JLabel         errorLabel    = new JLabel(" ");
+    private final JButton        loginBtn      = new JButton("Войти");
+
 
     public LoginDialog(boolean useXml) {
         this.useXml = useXml;
-        setTitle("Entrance chat (" + (useXml ? "XML" : "Serial") + ")");
+        setTitle("Вход в чат (" + (useXml ? "XML" : "Serial") + ")");
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         buildUI();
@@ -40,10 +42,8 @@ public class LoginDialog extends JDialog {
         gc.gridx = 0; gc.gridy = 4; gc.gridwidth = 2;
         panel.add(errorLabel, gc);
 
-        JButton loginBtn = new JButton("Войти");
         loginBtn.addActionListener(e -> onLogin());
         getRootPane().setDefaultButton(loginBtn);
-
         gc.gridy = 5; gc.anchor = GridBagConstraints.CENTER;
         panel.add(loginBtn, gc);
 
@@ -65,7 +65,7 @@ public class LoginDialog extends JDialog {
         String password = new String(passwordField.getPassword());
 
         if (host.isEmpty() || name.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Fill all fields");
+            showError("Заполните все поля");
             return;
         }
 
@@ -73,16 +73,38 @@ public class LoginDialog extends JDialog {
         try {
             port = Integer.parseInt(portText);
         } catch (NumberFormatException e) {
-            errorLabel.setText("Incorrect port");
+            showError("Некорректный порт");
             return;
         }
 
-        Connection connection = new Connection(host, port, useXml, name, password);
-        ChatWindow chatWindow = new ChatWindow(name, connection);
-        connection.setWindow(chatWindow);
-        connection.start();
+        loginBtn.setEnabled(false);
+        showError("Подключение...");
 
-        chatWindow.setVisible(true);
-        dispose();
+        Connection connection = new Connection(host, port, useXml, name, password);
+
+            try {
+                connection.tryLogin();
+
+
+                ChatWindow chatWindow = new ChatWindow(name, connection);
+                connection.startReading(chatWindow);
+                chatWindow.setVisible(true);
+                dispose();
+
+
+            } catch (Connection.AuthException e) {
+                showError(e.getMessage());
+                loginBtn.setEnabled(true);
+
+
+            } catch (Exception e) {
+                showError("Не удалось подключиться: " + e.getMessage());
+                loginBtn.setEnabled(true);
+            }
+
+    }
+
+    private void showError(String text) {
+        errorLabel.setText(text);
     }
 }

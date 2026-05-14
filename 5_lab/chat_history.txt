@@ -13,3 +13,6 @@ Misha	Hi
 Masha	Hi
 Dasha	Hi
 Dasha	Hi
+Misha	1
+Masha	2
+Misha	5

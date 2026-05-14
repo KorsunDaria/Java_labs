@@ -4,7 +4,6 @@ import chat.protocol.*;
 import chat.protocol.message.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 
 
@@ -23,6 +22,7 @@ public class Connection {
     private ChatWindow window;
     private volatile boolean running = true;
 
+
     public Connection(String host, int port, boolean useXml, String username, String password) {
         this.host     = host;
         this.port     = port;
@@ -31,18 +31,22 @@ public class Connection {
         this.password = password;
     }
 
-    public void setWindow(ChatWindow window) {
-        this.window = window;
+
+    public void tryLogin() throws IOException, AuthException {
+        connect();
+        login();
     }
 
-    public void start() {
-        Thread.ofVirtual().start(this::connectLoop);
+    public void startReading(ChatWindow window) {
+        this.window = window;
+        Thread.ofVirtual().start(this::readLoop);
     }
 
     public void sendMessage(String text) {
         if (session == null) return;
         send(new SendMessageMsg(text, session));
     }
+
 
     public void requestUserList() {
         if (session == null) return;
@@ -56,52 +60,59 @@ public class Connection {
     }
 
 
-    private void connectLoop() {
+    private void readLoop() {
+        window.showStatus("Подключён как " + username);
+        requestUserList();
+
         while (running) {
             try {
-                window.showStatus("Connecting to " + host + ":" + port + "...");
-                connect();
-                login();
-                window.showStatus("Connecting as " + username);
-                requestUserList();
-                readLoop();
-            } catch (AuthException e) {
-                running = false;
-                closeProtocol();
-                window.showAuthError(e.getMessage());
-                return;
+                handleIncoming(protocol.readMessage());
             } catch (IOException e) {
                 if (!running) break;
+
                 session = null;
                 closeProtocol();
-                window.showStatus("Connection lost...");
+                window.showStatus("Соединение потеряно. Переподключение через 3 сек...");
                 sleep(RECONNECT_DELAY_MS);
+
+
+                while (running) {
+                    try {
+                        connect();
+                        login();
+                        window.showStatus("Подключён как " + username);
+                        requestUserList();
+                        break;
+                    } catch (AuthException ae) {
+                        running = false;
+                        window.showStatus("Ошибка авторизации при переподключении: " + ae.getMessage());
+                        return;
+                    } catch (IOException ioe) {
+                        window.showStatus("Нет связи. Повтор через 3 сек...");
+                        sleep(RECONNECT_DELAY_MS);
+                    }
+                }
             }
         }
     }
 
     private void connect() throws IOException {
         Socket socket = new Socket(host, port);
-        OutputStream raw = socket.getOutputStream();
-        raw.write(useXml ? Protocol.MARKER_XML : Protocol.MARKER_SERIAL);
-        raw.flush();
-
-        protocol = useXml ? new XmlProtocol(socket) : new SerialProtocol(socket);
+        protocol = ProtocolFactory.create(socket, useXml);
     }
 
     private void login() throws IOException, AuthException {
         protocol.writeMessage(new LoginMsg(username, password, "SwingClient"));
 
-        Message response = protocol.readMessage();
-        if (response instanceof ErrorMsg m) {
-            throw new AuthException(m.getReason());
-        }
-        this.session = ((SuccessMsg) response).getSession();
-    }
-
-    private void readLoop() throws IOException {
-        while (running) {
-            handleIncoming(protocol.readMessage());
+        while (true) {
+            Message response = protocol.readMessage();
+            if (response instanceof SuccessMsg m) {
+                this.session = m.getSession();
+                return;
+            }
+            if (response instanceof ErrorMsg m) {
+                throw new AuthException(m.getReason());
+            }
         }
     }
 
@@ -117,7 +128,7 @@ public class Connection {
         }
     }
 
-    private synchronized void send(Message msg) {
+    private void send(Message msg) { //s
         if (protocol == null) return;
         try {
             protocol.writeMessage(msg);
@@ -135,10 +146,7 @@ public class Connection {
         try { Thread.sleep(ms); } catch (InterruptedException ignored) {}
     }
 
-    public boolean isXml() { return useXml; }
-
-
-    static class AuthException extends Exception {
-        AuthException(String message) { super(message); }
+    public static class AuthException extends Exception {
+        public AuthException(String message) { super(message); }
     }
 }

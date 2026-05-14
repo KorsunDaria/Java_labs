@@ -31,11 +31,11 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             socket.setSoTimeout(TIMEOUT_MS);
-            protocol = Server.detectProtocol(socket);
+            protocol = Server.detectProtocol(socket); // доп класс
             handleMessages();
 
         } catch (IOException e) {
-            logger.log("Сдшуте disconnected (timeout): " +
+            logger.log(" disconnected (timeout): " +
                     (username != null ? username : socket.getRemoteSocketAddress()));
         } finally {
             cleanup();
@@ -84,7 +84,7 @@ public class ClientHandler implements Runnable {
 
         room.broadcast(new EventLoginMsg(username), this);
         broadcastUserList();
-        logger.log(username + " вошёл в чат");
+        logger.log(username + " entrance the chat");
     }
 
     private void handleLogout() throws IOException {
@@ -146,7 +146,7 @@ public class ClientHandler implements Runnable {
             room.leave(this);
             room.broadcast(new EventLogoutMsg(username), null);
             broadcastUserList();
-            logger.log(username + " покинул чат");
+            logger.log(username + " exit from the chat");
         }
         try { socket.close(); } catch (IOException ignored) {}
     }

@@ -4,15 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4027afa-cf8c-4c49-934d-ae44a69103a2" name="Changes" comment="small file">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+    <list default="true" id="b4027afa-cf8c-4c49-934d-ae44a69103a2" name="Changes" comment="add tests">
+      <change beforePath="$PROJECT_DIR$/../4_lab/logs/errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/../4_lab/logs/errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chat_history.txt" beforeDir="false" afterPath="$PROJECT_DIR$/chat_history.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/chat/client/ChatWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/chat/client/ChatWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/chat/client/Connection.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/chat/client/Connection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/chat/client/LoginDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/chat/client/LoginDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/chat/client/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/chat/client/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/SendMessageMsg.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/message/SendMessageMsg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/XmlProtocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/XmlProtocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/chat/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/chat/server/PeekedSocket.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -41,21 +56,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JUnit.LoadTest.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/dariakorsun/labs/Java_labs/5_lab",
-    "onboarding.tips.debug.path": "/Users/dariakorsun/labs/Java_labs/5_lab/src/main/java/org/example/Main.java"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.LoadTest.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/dariakorsun/labs/Java_labs/5_lab/load-test&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/dariakorsun/labs/Java_labs/5_lab/src/main/java/org/example/Main.java&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/load-test" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/protocol/src/main/java/chat/protocol/message" />
     </key>
@@ -144,7 +160,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778489084850</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="add tests">
+      <option name="closed" value="true" />
+      <created>1778497395111</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1778497395111</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -162,7 +186,8 @@
     <MESSAGE value="fix error" />
     <MESSAGE value="split massage_type to class massage" />
     <MESSAGE value="small file" />
-    <option name="LAST_COMMIT_MESSAGE" value="small file" />
+    <MESSAGE value="add tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="add tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -217,6 +217,4 @@ public class XmlProtocol implements Protocol {
         child.setTextContent(text);
         parent.appendChild(child);
     }
-
-
 }

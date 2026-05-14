@@ -14,9 +14,9 @@ public class Main {
 
         final boolean xml = useXml;
 
-        SwingUtilities.invokeLater(() -> {
+       //SwingUtilities.invokeLater(() -> {
             LoginDialog login = new LoginDialog(xml);
             login.setVisible(true);
-        });
+       //});
     }
 }

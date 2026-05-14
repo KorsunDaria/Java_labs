@@ -1,7 +1,5 @@
-package chat.protocol;
+package chat.protocol.message;
 
-
-import chat.protocol.message.Message;
 
 public class SendMessageMsg extends Message {
     private String text;

@@ -15,10 +15,11 @@ public class ChatWindow extends JFrame {
     private final String     myName;
     private final Connection connection;
 
-    private final JTextPane  chatArea    = new JTextPane();
-    private final JList<String> userList = new JList<>(new DefaultListModel<>());
-    private final JTextField inputField  = new JTextField();
-    private final JLabel     statusLabel = new JLabel("Сonnecting...");
+    private final JTextPane     chatArea  = new JTextPane();
+    private final JList<String> userList  = new JList<>(new DefaultListModel<>());
+    private final JTextField    inputField = new JTextField();
+    private final JLabel        statusLabel = new JLabel("Подключение...");
+
 
     public ChatWindow(String myName, Connection connection) {
         this.myName     = myName;
@@ -39,7 +40,6 @@ public class ChatWindow extends JFrame {
     }
 
     private void buildUI() {
-
         chatArea.setEditable(false);
         chatArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
         JScrollPane chatScroll = new JScrollPane(chatArea);
@@ -47,7 +47,7 @@ public class ChatWindow extends JFrame {
         userList.setPreferredSize(new Dimension(140, 0));
         userList.setFont(new Font("SansSerif", Font.PLAIN, 13));
         JScrollPane userScroll = new JScrollPane(userList);
-        userScroll.setBorder(BorderFactory.createTitledBorder("Members"));
+        userScroll.setBorder(BorderFactory.createTitledBorder("Участники"));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, chatScroll, userScroll);
         splitPane.setResizeWeight(0.75);
@@ -56,10 +56,10 @@ public class ChatWindow extends JFrame {
         inputField.setFont(new Font("SansSerif", Font.PLAIN, 13));
         inputField.addActionListener(e -> sendMessage());
 
-        JButton sendBtn  = new JButton("Send");
+        JButton sendBtn = new JButton("Отправить");
         sendBtn.addActionListener(e -> sendMessage());
 
-        JButton listBtn  = new JButton("Refresh Members List");
+        JButton listBtn = new JButton("Обновить список");
         listBtn.addActionListener(e -> connection.requestUserList());
 
         JPanel bottomPanel = new JPanel(new BorderLayout(5, 0));
@@ -74,9 +74,9 @@ public class ChatWindow extends JFrame {
         statusLabel.setFont(new Font("SansSerif", Font.ITALIC, 11));
         statusLabel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
 
-        add(splitPane,   BorderLayout.CENTER);
-        add(bottomPanel, BorderLayout.SOUTH);
-        add(statusLabel, BorderLayout.NORTH);
+        add(splitPane,    BorderLayout.CENTER);
+        add(bottomPanel,  BorderLayout.SOUTH);
+        add(statusLabel,  BorderLayout.NORTH);
     }
 
     private void sendMessage() {
@@ -86,31 +86,23 @@ public class ChatWindow extends JFrame {
         connection.sendMessage(text);
     }
 
-
     public void appendMessage(String fromName, String text) {
         SwingUtilities.invokeLater(() -> {
-            String time = LocalTime.now().format(TIME_FMT);
+            String time  = LocalTime.now().format(TIME_FMT);
             boolean isMe = myName.equals(fromName);
 
             StyledDocument doc = chatArea.getStyledDocument();
-            Style base = chatArea.getLogicalStyle();
-
-
             appendStyled(doc, "[" + time + "] ", Color.GRAY, false);
-
-            Color nameColor = isMe ? new Color(0, 100, 200) : new Color(150, 0, 0);
-            appendStyled(doc, fromName + ": ", nameColor, true);
-
+            appendStyled(doc, fromName + ": ", isMe ? new Color(0, 100, 200) : new Color(150, 0, 0), true);
             appendStyled(doc, text + "\n", Color.BLACK, false);
-
             scrollToBottom();
         });
     }
 
     public void appendEvent(String eventText) {
         SwingUtilities.invokeLater(() -> {
-            StyledDocument doc = chatArea.getStyledDocument();
-            appendStyled(doc, "*** " + eventText + " ***\n", new Color(100, 100, 100), false);
+            appendStyled(chatArea.getStyledDocument(),
+                    "*** " + eventText + " ***\n", new Color(100, 100, 100), false);
             scrollToBottom();
         });
     }
@@ -129,20 +121,6 @@ public class ChatWindow extends JFrame {
 
     public void showStatus(String status) {
         SwingUtilities.invokeLater(() -> statusLabel.setText(status));
-    }
-
-
-    public void showAuthError(String reason) {
-        SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(this,
-                    reason,
-                    "Entrance error",
-                    JOptionPane.ERROR_MESSAGE);
-            dispose();
-
-            LoginDialog login = new LoginDialog(connection.isXml());
-            login.setVisible(true);
-        });
     }
 
     private void appendStyled(StyledDocument doc, String text, Color color, boolean bold) {
